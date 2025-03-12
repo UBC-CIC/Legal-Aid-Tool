@@ -35,7 +35,7 @@
     "crypto-js": "^4.2.0",
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
-    "jspdf": "^2.5.2",
+    "jspdf": "^3.0.0",
     "ldrs": "^1.0.2",
     "material-react-table": "^2.13.1",
     "prism": "^4.1.2",
