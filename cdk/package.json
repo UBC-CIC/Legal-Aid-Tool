@@ -22,7 +22,7 @@
   "dependencies": {
     "@aws-cdk/aws-amplify-alpha": "^2.146.0-alpha.0",
     "@aws-cdk/custom-resources": "^1.204.0",
-    "aws-cdk-lib": "^2.146.0",
+    "aws-cdk-lib": "^2.185.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21",
     "yaml": "^2.4.5"
