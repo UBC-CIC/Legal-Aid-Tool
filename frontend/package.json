@@ -31,7 +31,7 @@
     "aws-amplify": "^6.13.4",
     "aws-jwt-verify": "^4.0.1",
     "aws-sdk": "^2.1659.0",
-    "axios": "^1.7.3",
+    "axios": "^1.8.2",
     "ckeditor5": "^44.3.0",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
