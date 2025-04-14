@@ -20,4 +20,4 @@ const dbStack = new DatabaseStack(app, `${StackPrefix}-Database`, vpcStack, { en
 const apiStack = new ApiGatewayStack(app, `${StackPrefix}-Api`, dbStack, vpcStack, { env });
 const dbFlowStack = new DBFlowStack(app, `${StackPrefix}-DBFlow`, vpcStack, dbStack, apiStack, { env });
 const amplifyStack = new AmplifyStack(app, `${StackPrefix}-Amplify`, apiStack, { env });
-cdk.Tags.of(app).add("app", "Virtual-Care-Interaction");
+cdk.Tags.of(app).add("app", "Legal-Aid-Tool");

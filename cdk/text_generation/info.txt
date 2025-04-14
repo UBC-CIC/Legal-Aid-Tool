@@ -11,7 +11,7 @@ docker run -p 9000:8080 docker-image:test
 curl "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
 
 ### PYTHON VIRTUAL ENVIRONMENT
-# Go to \Virtual-Care-Interaction\cdk\text_generation
+# Go to \Legal-Aid-Tool\cdk\text_generation
 # Create venv
 python -m venv venv
 

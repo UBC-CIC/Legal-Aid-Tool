@@ -187,9 +187,82 @@ export class ApiGatewayStack extends cdk.Stack {
         email: true,
       },
       userVerification: {
-        emailSubject: "You need to verify your email",
-        emailBody:
-          "Thank you for signing up to Legal Aid Tool. \n Your verification code is {####}",
+        emailSubject: "Please verify your email",
+        emailBody: `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f4f7fc;
+                  color: #333;
+                  margin: 0;
+                  padding: 0;
+                  font-size: 16px;
+                }
+                .email-container {
+                  background-color: #ffffff;
+                  width: 100%;
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  border-radius: 8px;
+                  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  text-align: center;
+                  margin-bottom: 20px;
+                }
+                .header img {
+                  width: 100px;
+                  height: auto;
+                }
+                .main-content {
+                  text-align: center;
+                  font-size: 18px;
+                  color: #444;
+                  margin-bottom: 30px;
+                }
+                .code {
+                  display: inline-block;
+                  background-color: #546bdf;
+                  color: #ffffff;
+                  font-size: 24px;
+                  font-weight: bold;
+                  padding: 15px 25px;
+                  border-radius: 4px;
+                  margin-top: 20px;
+                  margin-bottom: 20px;
+                }
+                .footer {
+                  text-align: center;
+                  font-size: 14px;
+                  color: #888;
+                }
+                .footer a {
+                  color: #546bdf;
+                  text-decoration: none;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="email-container">
+                <div class="header">
+                  <h1>Legal Aid Tool</h1>
+                </div>
+                <div class="main-content">
+                  <p>Thank you for signing up for Legal Aid Tool!</p>
+                  <p>Please verify your email by using the code below:</p>
+                  <div class="code">{####}</div>
+                  <p>If you did not request this verification, please ignore this email.</p>
+                </div>
+                <div class="footer">
+                  <p>Legal Aid Tool &copy; 2025</p>
+                </div>
+              </div>
+            </body>
+          </html>
+        `,
         emailStyle: cognito.VerificationEmailStyle.CODE,
       },
       passwordPolicy: {
@@ -1872,7 +1945,7 @@ export class ApiGatewayStack extends cdk.Stack {
       visibilityConfig: {
         sampledRequestsEnabled: true,
         cloudWatchMetricsEnabled: true,
-        metricName: "virtualcareint-firewall",
+        metricName: "legalaidtool-firewall",
       },
       rules: [
         {
