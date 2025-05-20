@@ -368,7 +368,7 @@ const Login = () => {
                         </Link>
                       </Box>
                     )}
-                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 2, color: "white", backgroundColor: "var(--primary)", boxShadow: 'none', borderRadius: 2, fontFamily: 'Outfit', "&:hover": {backgroundColor: "var(--secondary)", boxShadow: "none",} }} disabled={loading}>
+                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 2, color: "white", backgroundColor: "darkgrey", boxShadow: 'none', borderRadius: 2, fontFamily: 'Outfit', "&:hover": {backgroundColor: "darkgrey", boxShadow: "none",} }} disabled={loading}>
                       {loading ? <CircularProgress size={24} color="inherit" /> : isSignUp ? "Sign Up" : "Sign In"}
                     </Button>
                     <Box textAlign="center" mt={2}>
