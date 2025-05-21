@@ -115,10 +115,10 @@ Moreover, you will need to upload your github username to Amazon SSM Parameter S
 <summary>macOS</summary>
 
 ```bash
-aws ssm put-parameter ^
-    --name "Lat-owner-name" ^
-    --value "<YOUR-GITHUB-USERNAME>" ^
-    --type String ^
+aws ssm put-parameter \
+    --name "Lat-owner-name" \
+    --value "<YOUR-GITHUB-USERNAME>" \
+    --type String \
     --profile <YOUR-PROFILE-NAME>
 ```
 </details>
@@ -188,7 +188,7 @@ aws secretsmanager create-secret `
 
 &nbsp;
 
-For example,
+For example (macOS),
 
 ```
 aws secretsmanager create-secret \
