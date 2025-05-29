@@ -53,7 +53,7 @@ export class AmplifyStack extends cdk.Stack {
 
     const username = cdk.aws_ssm.StringParameter.valueForStringParameter(
       this,
-      "lat-owner-name"
+      "Lat-owner-name"
     );
 
     const amplifyApp = new App(this, `${id}-amplifyApp`, {
