@@ -71,12 +71,6 @@ def lambda_handler(event, context):
     key = f"{audio_file_id}/{file_name}.{file_type}"
     content_type = allowed_audio_types[file_type]
 
-    logger.info({
-        "audio_file_id": audio_file_id,
-        "file_type": file_type,
-        "file_name": file_name,
-    })
-
     try:
         presigned_url = s3.generate_presigned_url(
             ClientMethod="put_object",

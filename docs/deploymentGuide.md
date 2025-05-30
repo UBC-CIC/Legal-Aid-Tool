@@ -115,10 +115,10 @@ Moreover, you will need to upload your github username to Amazon SSM Parameter S
 <summary>macOS</summary>
 
 ```bash
-aws ssm put-parameter \
-    --name "LAT-owner-name" \
-    --value "<YOUR-GITHUB-USERNAME>" \
-    --type String \
+aws ssm put-parameter ^
+    --name "Lat-owner-name" ^
+    --value "<YOUR-GITHUB-USERNAME>" ^
+    --type String ^
     --profile <YOUR-PROFILE-NAME>
 ```
 </details>
@@ -128,7 +128,7 @@ aws ssm put-parameter \
 
 ```cmd
 aws ssm put-parameter ^
-    --name "LAT-owner-name" ^
+    --name "Lat-owner-name" ^
     --value "<YOUR-GITHUB-USERNAME>" ^
     --type String ^
     --profile <YOUR-PROFILE-NAME>
@@ -141,7 +141,7 @@ aws ssm put-parameter ^
 
 ```powershell
 aws ssm put-parameter `
-    --name "LAT-owner-name" `
+    --name "Lat-owner-name" `
     --value "<YOUR-GITHUB-USERNAME>" `
     --type String `
     --profile <YOUR-PROFILE-NAME>

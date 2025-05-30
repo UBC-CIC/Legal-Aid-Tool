@@ -20,7 +20,14 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as logs from "aws-cdk-lib/aws-logs";
+import * as codebuild from "aws-cdk-lib/aws-codebuild";
+// At the top of your file with other imports
+import * as ecr from 'aws-cdk-lib/aws-ecr';
+import { Stack, StackProps } from "aws-cdk-lib";
 
+interface ApiGatewayStackProps extends cdk.StackProps {
+  ecrRepositories: { [key: string]: ecr.Repository };
+}
 
 export class ApiGatewayStack extends cdk.Stack {
   private readonly api: apigateway.SpecRestApi;
@@ -40,12 +47,13 @@ export class ApiGatewayStack extends cdk.Stack {
   public addLayer = (name: string, layer: LayerVersion) =>
     (this.layerList[name] = layer);
   public getLayers = () => this.layerList;
+
   constructor(
     scope: Construct,
     id: string,
     db: DatabaseStack,
     vpcStack: VpcStack,
-    props?: cdk.StackProps
+    props: ApiGatewayStackProps
   ) {
     super(scope, id, props);
 
@@ -219,11 +227,11 @@ export class ApiGatewayStack extends cdk.Stack {
         emailStyle: cognito.VerificationEmailStyle.CODE,
       },
       passwordPolicy: {
-        minLength: 8,
+        minLength: 12,
         requireLowercase: true,
         requireUppercase: true,
         requireDigits: true,
-        requireSymbols: false,
+        requireSymbols: true
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -901,21 +909,29 @@ export class ApiGatewayStack extends cdk.Stack {
       role: coglambdaRole,
     });
 
-    const audioToTextFunction = new lambda.DockerImageFunction(this, `${id}-audioToTextFunc`, {
-      code: lambda.DockerImageCode.fromImageAsset("./lambda/audioToText"),
-      timeout: Duration.seconds(300),
-      memorySize: 2048,
-      vpc: vpcStack.vpc,
-      environment: {
-        AUDIO_BUCKET: audioStorageBucket.bucketName,
+    const audioToTextFunction = new lambda.DockerImageFunction(
+  this,
+  `${id}-audioToTextFunc`,
+  {
+    code: lambda.DockerImageCode.fromEcr(
+      props.ecrRepositories["audioToText"], 
+      {
+        tagOrDigest: "latest",      // or whatever tag you're using
+      }
+    ),
+    memorySize: 512,
+    timeout: cdk.Duration.seconds(300),
+    vpc: vpcStack.vpc,
+    functionName: `${id}-audioToTextFunc`,
+    environment: {
+      SAUDIO_BUCKET: audioStorageBucket.bucketName,
         SM_DB_CREDENTIALS: db.secretPathUser.secretName,
         RDS_PROXY_ENDPOINT: db.rdsProxyEndpoint,
         APPSYNC_API_URL: this.eventApi.graphqlUrl,
         REGION: this.region,
-      },
-      functionName: `${id}-audioToTextFunc`,
-      role: coglambdaRole,
-    });
+    },
+  }
+);
 
 
     // textToLlmQueue.grantSendMessages(audioToTextFunction);
@@ -927,12 +943,6 @@ export class ApiGatewayStack extends cdk.Stack {
     // audioToTextQueue.grantConsumeMessages(audioToTextFunction);
     // Grant the Lambda function read-only permissions to the S3 bucket
     audioStorageBucket.grantRead(audioToTextFunction);
-
-    // audioToTextFunction.addEventSource(
-    //   new lambdaEventSources.SqsEventSource(audioToTextQueue, {
-    //     batchSize: 5,
-    //   })
-    // );
 
     audioToTextFunction.addToRolePolicy(
       new iam.PolicyStatement({
@@ -1172,26 +1182,36 @@ export class ApiGatewayStack extends cdk.Stack {
      *
      * Create Lambda with container image for text generation workflow in RAG pipeline
      */
-    const textGenLambdaDockerFunc = new lambda.DockerImageFunction(
-      this,
-      `${id}-TextGenLambdaDockerFunction`,
-      {
-        code: lambda.DockerImageCode.fromImageAsset("./lambda/text_generation"),
-        memorySize: 512,
-        timeout: cdk.Duration.seconds(300),
-        vpc: vpcStack.vpc, // Pass the VPC
-        functionName: `${id}-TextGenLambdaDockerFunction`,
-        environment: {
-          SM_DB_CREDENTIALS: db.secretPathAdminName,
-          RDS_PROXY_ENDPOINT: db.rdsProxyEndpointAdmin,
-          REGION: this.region,
-          BEDROCK_LLM_PARAM: bedrockLLMParameter.parameterName,
-          EMBEDDING_MODEL_PARAM: embeddingModelParameter.parameterName,
-          TABLE_NAME_PARAM: tableNameParameter.parameterName,
-        },
-      }
-    );
 
+    // Create Lambda with container image for text generation workflow in RAG pipeline
+const textGenLambdaDockerFunc = new lambda.DockerImageFunction(
+  this,
+  `${id}-TextGenLambdaDockerFunction`,
+  {
+    code: lambda.DockerImageCode.fromEcr(
+      props.ecrRepositories["textGeneration"], 
+      {
+        tagOrDigest: "latest",      // or whatever tag you're using
+      }
+    ),
+    memorySize: 512,
+    timeout: cdk.Duration.seconds(300),
+    vpc: vpcStack.vpc,
+    functionName: `${id}-TextGenLambdaDockerFunction`,
+    environment: {
+      SM_DB_CREDENTIALS: db.secretPathAdminName,
+      RDS_PROXY_ENDPOINT: db.rdsProxyEndpointAdmin,
+      REGION: this.region,
+      BEDROCK_LLM_PARAM: bedrockLLMParameter.parameterName,
+      EMBEDDING_MODEL_PARAM: embeddingModelParameter.parameterName,
+      TABLE_NAME_PARAM: tableNameParameter.parameterName,
+      TABLE_NAME: "DynamoDB-Conversation-Table",
+    },
+  }
+);
+
+    
+    
     // Override the Logical ID of the Lambda Function to get ARN in OpenAPI
     const cfnTextGenDockerFunc = textGenLambdaDockerFunc.node
       .defaultChild as lambda.CfnFunction;
@@ -1295,23 +1315,30 @@ export class ApiGatewayStack extends cdk.Stack {
 
 
     const caseGenLambdaDockerFunc = new lambda.DockerImageFunction(
-      this,
-      `${id}-CaseGenLambdaDockerFunction`,
+  this,
+  `${id}-CaseLambdaDockerFunction`,
+  {
+   code: lambda.DockerImageCode.fromEcr(
+      props.ecrRepositories["caseGeneration"], 
       {
-        code: lambda.DockerImageCode.fromImageAsset("./lambda/case_generation"),
-        memorySize: 512,
-        timeout: cdk.Duration.seconds(300),
-        vpc: vpcStack.vpc, // Pass the VPC
-        functionName: `${id}-CaseLambdaDockerFunction`,
-        environment: {
-          SM_DB_CREDENTIALS: db.secretPathAdminName,
-          RDS_PROXY_ENDPOINT: db.rdsProxyEndpointAdmin,
-          REGION: this.region,
-          BEDROCK_LLM_PARAM: bedrockLLMParameter.parameterName,
-          TABLE_NAME_PARAM: tableNameParameter.parameterName,
-        },
+        tagOrDigest: "latest",      // or whatever tag you're using
       }
-    );
+    ),
+    memorySize: 512,
+    timeout: cdk.Duration.seconds(300),
+    vpc: vpcStack.vpc,
+    functionName: `${id}-CaseLambdaDockerFunction`,
+    environment: {
+      SM_DB_CREDENTIALS: db.secretPathAdminName,
+      RDS_PROXY_ENDPOINT: db.rdsProxyEndpointAdmin,
+      REGION: this.region,
+      BEDROCK_LLM_PARAM: bedrockLLMParameter.parameterName,
+      EMBEDDING_MODEL_PARAM: embeddingModelParameter.parameterName,
+      TABLE_NAME_PARAM: tableNameParameter.parameterName,
+      TABLE_NAME: "DynamoDB-Conversation-Table",
+    },
+  }
+);
 
     // Override the Logical ID of the Lambda Function to get ARN in OpenAPI
     const cfnCaseGenDockerFunc = caseGenLambdaDockerFunc.node
@@ -1373,24 +1400,30 @@ export class ApiGatewayStack extends cdk.Stack {
 
 
     const summaryLambdaDockerFunc = new lambda.DockerImageFunction(
-      this,
-      `${id}-SummaryLambdaDockerFunction`,
+  this,
+  `${id}-SummaryLambdaDockerFunction`,
+  {
+    code: lambda.DockerImageCode.fromEcr(
+      props.ecrRepositories["summaryGeneration"], 
       {
-        code: lambda.DockerImageCode.fromImageAsset("./lambda/summary_generation"),
-        memorySize: 512,
-        timeout: cdk.Duration.seconds(300),
-        vpc: vpcStack.vpc, // Pass the VPC
-        functionName: `${id}-SummaryLambdaDockerFunction`,
-        environment: {
-          SM_DB_CREDENTIALS: db.secretPathAdminName,
-          RDS_PROXY_ENDPOINT: db.rdsProxyEndpointAdmin,
-          REGION: this.region,
-          TABLE_NAME: "DynamoDB-Conversation-Table",
-          BEDROCK_LLM_PARAM: bedrockLLMParameter.parameterName,
-          TABLE_NAME_PARAM: tableNameParameter.parameterName,
-        },
+        tagOrDigest: "latest",      // or whatever tag you're using
       }
-    );
+    ),
+    memorySize: 512,
+    timeout: cdk.Duration.seconds(300),
+    vpc: vpcStack.vpc,
+    functionName: `${id}-SummaryLambdaDockerFunction`,
+    environment: {
+      SM_DB_CREDENTIALS: db.secretPathAdminName,
+      RDS_PROXY_ENDPOINT: db.rdsProxyEndpointAdmin,
+      REGION: this.region,
+      BEDROCK_LLM_PARAM: bedrockLLMParameter.parameterName,
+      EMBEDDING_MODEL_PARAM: embeddingModelParameter.parameterName,
+      TABLE_NAME_PARAM: tableNameParameter.parameterName,
+      TABLE_NAME: "DynamoDB-Conversation-Table",
+    },
+  }
+);
 
     // Override the Logical ID of the Lambda Function to get ARN in OpenAPI
     const cfnSummaryDockerFunc = summaryLambdaDockerFunc.node

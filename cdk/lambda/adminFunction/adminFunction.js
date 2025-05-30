@@ -172,8 +172,6 @@ exports.handler = async (event) => {
             break;
           }
       
-          console.log("Updating message limit in SSM:", newValue);
-      
           await ssm.send(
             new PutParameterCommand({
               Name: process.env.MESSAGE_LIMIT,

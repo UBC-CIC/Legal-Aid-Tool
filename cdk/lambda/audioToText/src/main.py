@@ -60,9 +60,6 @@ def invoke_event_notification(audio_file_id, message, cognito_token):
             "variables": {"message": message, "audioFileId": audio_file_id}
         }
 
-        # Log payload for debugging
-        logger.info(f"Sending notification payload: {payload}")
-
         # Perform the HTTP request
         with httpx.Client() as client:
             response = client.post(APPSYNC_API_URL, headers=headers, json=payload)

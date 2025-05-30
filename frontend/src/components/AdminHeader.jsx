@@ -138,7 +138,7 @@ const AdminHeader = () => {
           className="flex flex-col items-center bg-transparent text-[var(--header-text)] hover:text-gray-600 focus:outline-none transition-all duration-200"
         >
           <DescriptionIcon fontSize="large" />
-          <span className="mt-1">Disclaimer</span>
+          <span className="mt-1">Waiver</span>
         </button>
 
         {/* Account Menu */}

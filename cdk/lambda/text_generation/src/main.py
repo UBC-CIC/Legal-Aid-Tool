@@ -22,8 +22,6 @@ RDS_PROXY_ENDPOINT = os.environ["RDS_PROXY_ENDPOINT"]
 BEDROCK_LLM_PARAM = os.environ["BEDROCK_LLM_PARAM"]
 EMBEDDING_MODEL_PARAM = os.environ["EMBEDDING_MODEL_PARAM"]
 TABLE_NAME_PARAM = os.environ["TABLE_NAME_PARAM"]
-# CANLII_API_KEY = os.environ.get("CANLII_API_KEY", "")
-CANLII_API_KEY = "yvMWSx8fZH5hSWVjSoSUp7o7pdIS6xW89H6WtZ35"
 # AWS Clients
 secrets_manager_client = boto3.client("secretsmanager")
 ssm_client = boto3.client("ssm", region_name=REGION)

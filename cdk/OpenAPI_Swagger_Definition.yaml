@@ -92,24 +92,6 @@ paths:
           description: ID of the case
           schema:
             type: string
-        - in: query
-          name: session_id
-          required: true
-          description: ID of the session since multiple sessions can exist within a table
-          schema:
-            type: string
-        - in: query
-          name: patient_id
-          required: true
-          description: ID of the patient used to find the patient name which becomes the conversation's label
-          schema:
-            type: string
-        - in: query
-          name: session_name
-          required: false
-          description: Name of the session passed from the front-end after it has been created by the LLM
-          schema:
-            type: string
       requestBody:
         required: false
         content:

@@ -127,7 +127,7 @@ export default function Disclaimer() {
           backgroundColor: "transparent",
         }}
       >
-        <h1 style={{ fontSize: '30px', textAlign: 'left', marginBottom: "10px" }}><strong>Current Disclaimer</strong></h1>
+        <h1 style={{ fontSize: '30px', textAlign: 'left', marginBottom: "10px" }}><strong>Current Waiver</strong></h1>
 
         {lastUpdated && (
           <Typography
@@ -185,7 +185,7 @@ export default function Disclaimer() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', justifyContent: 'space-between' }}>
                  {/* History Navigation */}
-                 <h1 style={{ fontSize: '30px', margin: '10px' }}><strong>Previous Disclaimers</strong></h1>
+                 <h1 style={{ fontSize: '30px', margin: '10px' }}><strong>Previous Waivers</strong></h1>
       
                  <div>
                  <IconButton 

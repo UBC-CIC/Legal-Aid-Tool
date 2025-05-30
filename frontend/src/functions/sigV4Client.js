@@ -13,7 +13,10 @@ sigV4Client.newClient = function (config) {
   const X_AMZ_DATE = "x-amz-date";
   const X_AMZ_SECURITY_TOKEN = "x-amz-security-token";
   const HOST = "host";
-  const AUTHORIZATION = "Authorization";
+// Import the dotenv package to load environment variables
+// require('dotenv').config();
+
+const AUTHORIZATION = process.env.AUTHORIZATION;
 
   function hash(value) {
     return SHA256(value); // eslint-disable-line
