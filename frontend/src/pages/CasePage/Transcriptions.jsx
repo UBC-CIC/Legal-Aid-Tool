@@ -348,7 +348,8 @@ const handleDownload = async (transcription) => {
   doc.text("Transcription:", margin, y);
   y += 10;
 
-  const content = marked.parse(audioText).replace(/<[^>]+>/g, "");
+  const sanitizedHtml = DOMPurify.sanitize(marked.parse(audioText));
+  const content = sanitizedHtml.replace(/<[^>]+>/g, "");
   const lines = doc.splitTextToSize(content, 180);
 
   for (let i = 0; i < lines.length; i++) {
