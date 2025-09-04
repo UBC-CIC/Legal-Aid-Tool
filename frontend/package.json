@@ -34,7 +34,7 @@
     "aws-jwt-verify": "^4.0.1",
     "aws-sdk": "^2.1659.0",
     "axios": "^1.8.2",
-    "ckeditor5": "^44.3.0",
+    "ckeditor5": "^46.0.3",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
