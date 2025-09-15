@@ -243,7 +243,7 @@ export class CICDStack extends cdk.Stack {
 
     // Lambda to handle vulnerability scan results
     const vulnerabilityHandler = new lambda.Function(this, 'VulnerabilityHandler', {
-      runtime: lambda.Runtime.PYTHON_3_11,
+      runtime: lambda.Runtime.PYTHON_3_13,
       handler: 'index.lambda_handler',
       code: lambda.Code.fromInline(`
 import json

@@ -110,7 +110,7 @@ export class ApiGatewayStack extends cdk.Stack {
    */
     const psycopgLayer = new lambda.LayerVersion(this, "psycopgLambdaLayer", {
       code: lambda.Code.fromAsset("./layers/psycopg2.zip"),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_11],
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_13],
       description: "Lambda layer containing the psycopg2 Python library",
     });
 
@@ -804,7 +804,7 @@ export class ApiGatewayStack extends cdk.Stack {
       this,
       `${id}-NotificationFunction`,
       {
-        runtime: lambda.Runtime.PYTHON_3_11,
+        runtime: lambda.Runtime.PYTHON_3_13,
         code: lambda.Code.fromAsset("lambda/eventNotification"),
         handler: "eventNotification.lambda_handler",
         environment: {
@@ -1480,7 +1480,7 @@ export class ApiGatewayStack extends cdk.Stack {
       this,
       `${id}-GeneratePreSignedURLFunction`,
       {
-        runtime: lambda.Runtime.PYTHON_3_11,
+        runtime: lambda.Runtime.PYTHON_3_13,
         code: lambda.Code.fromAsset("lambda/generatePreSignedURL"),
         handler: "generatePreSignedURL.lambda_handler",
         timeout: Duration.seconds(300),
