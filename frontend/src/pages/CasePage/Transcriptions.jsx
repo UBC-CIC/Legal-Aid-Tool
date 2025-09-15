@@ -17,6 +17,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { v4 as uuidv4 } from "uuid";
 import SideMenu from "./SideMenu";
+import NotFound from "../NotFound";
 
 const constructTranscriptionWebSocketUrl = (cognitoToken, audioFileId) => {
   const tempUrl = import.meta.env.VITE_GRAPHQL_WS_URL;
@@ -36,6 +37,7 @@ const Transcriptions = () => {
   const [caseData, setCaseData] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -78,6 +80,8 @@ const [selectedTranscription, setSelectedTranscription] = useState(null);
         const { tokens } = await fetchAuthSession();
         const token = tokens.idToken;
         const cognitoId = tokens.idToken.payload.sub;
+        const role = tokens.idToken.payload["cognito:groups"]?.[0] || "student";
+        setUserRole(role);
         const response = await fetch(
           `${import.meta.env.VITE_API_ENDPOINT}student/case_page?case_id=${caseId}&cognito_id=${cognitoId}`,
           {
@@ -97,6 +101,7 @@ const [selectedTranscription, setSelectedTranscription] = useState(null);
         console.error("Error fetching case data:", error);
         setCaseData(null);
       }
+      setIsLoading(false);
     };
 
     fetchCaseData();
@@ -422,7 +427,7 @@ const handleDelete = async () => {
 
   return (
     <>
-    {caseData ? (
+    {(caseData || isLoading)? (
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Box position="fixed" top={0} left={0} width="100%" zIndex={1000} bgcolor="white">
         {userRole === "instructor" ? <InstructorHeader /> : <StudentHeader />}
