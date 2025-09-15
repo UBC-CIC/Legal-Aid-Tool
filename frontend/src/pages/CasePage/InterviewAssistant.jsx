@@ -815,6 +815,8 @@ const InterviewAssistant = () => {
   onChange={(e) => setUserInput(e.target.value)}
   onKeyDown={handleKeyPress}
   disabled={caseData?.status === "Archived"}
+  inputProps={{maxLength : 2000}}
+  helperText={`${userInput.length}/2000`}
   sx={{
     maxHeight: "300px",
     overflowY: "auto",
