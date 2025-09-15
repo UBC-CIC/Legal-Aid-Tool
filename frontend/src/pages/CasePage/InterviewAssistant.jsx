@@ -816,8 +816,11 @@ const InterviewAssistant = () => {
   onKeyDown={handleKeyPress}
   disabled={caseData?.status === "Archived"}
   inputProps={{maxLength : 2000}}
-  helperText={`${userInput.length}/2000`}
-  sx={{
+helperText={
+    <span style={{ color: userInput.length >= 2000 ? 'red' : 'inherit' }}>
+      {userInput.length}/2000
+    </span>
+  }  sx={{
     maxHeight: "300px",
     overflowY: "auto",
     mr: "0.5em",

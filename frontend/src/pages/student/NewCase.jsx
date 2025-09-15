@@ -429,8 +429,11 @@ const NewCaseForm = () => {
   rows={4}
   required
   inputProps={{ maxLength: 10000 }}
-  helperText={`${formData.legalMatterSummary.length}/10000 characters`}
-  InputLabelProps={{
+helperText={
+    <span style={{ color: formData.legalMatterSummary.length >= 10000 ? 'red' : 'inherit' }}>
+      {formData.legalMatterSummary.length}/10000 characters
+    </span>
+  }  InputLabelProps={{
     sx: {
       color: "var(--placeholder-text)", // Normal label color
       "&.Mui-focused": {
