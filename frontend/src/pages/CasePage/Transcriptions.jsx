@@ -221,7 +221,7 @@ const [selectedTranscription, setSelectedTranscription] = useState(null);
     if (!file) return;
 
     // Add file size check 
-  const maxSizeInMB = 5;
+  const maxSizeInMB = 500;
   const fileSizeInMB = file.size / 1024 / 1024;
   
   if (fileSizeInMB > maxSizeInMB) {
