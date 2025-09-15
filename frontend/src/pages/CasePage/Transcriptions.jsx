@@ -220,6 +220,14 @@ const [selectedTranscription, setSelectedTranscription] = useState(null);
     const file = e.target.files[0];
     if (!file) return;
 
+    // Add file size check 
+  const maxSizeInMB = 150;
+  const fileSizeInMB = file.size / 1024 / 1024;
+  
+  if (fileSizeInMB > maxSizeInMB) {
+    setError(`File size (${fileSizeInMB.toFixed(2)}MB) exceeds the ${maxSizeInMB}MB limit`);
+    return;
+  }
     const fileNameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
     const fileTypeShort = file.type.split("/")[1];
     const normalizedType = fileTypeShort === "mpeg" ? "mp3" : fileTypeShort;
