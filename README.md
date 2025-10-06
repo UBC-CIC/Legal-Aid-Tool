@@ -15,7 +15,7 @@ This prototype explores how Large Language Models (LLMs) can enhance legal workf
 
 The following architecture diagram illustrates the various AWS components utilized to deliver the solution. For an in-depth explanation of the frontend and backend stacks, please look at the [Architecture Guide](docs/architectureDeepDive.md).
 
-![Archnitecture Diagram](./docs/media/architecture.png)
+![Architecture Diagram](./docs/media/architecture.png)
 
 ## Deployment Guide
 
@@ -30,33 +30,50 @@ Please refer to the [Web App User Guide](./docs/userGuide.md) for instructions o
 ```
 ├── cdk/
 │   ├── bin/
-│   ├── data_ingestion/
 │   ├── lambda/
 │   ├── layers/
 │   ├── lib/
 │   └── graphql/
 
 ├── docs/
+│   ├── llm_interaction/
+│   ├── media/
 │   ├── userGuide.md
 │   ├── deploymentGuide.md
-│   ├── images/
+│   ├── architectureDeepDive.md
+│   ├── dependencyManagement.md
+│   ├── modificationGuide.md
+│   └── securityGuide.md
 ├── frontend/
 │   ├── public/
 │   └── src/
-│       ├── app/
-│       └── components/
+│       ├── components/
+│       ├── functions/
+│       └── pages/
+│           ├── admin/
+│           ├── CasePage/
+│           ├── instructor/
+│           └── student/
 
 ```
 
-1. `/cdk`: Contains the deployment code for the app's AWS infrastructure
-   - `/bin`: Contains the instantiation of CDK stack
-   - `/data_ingestion`: Contains the code required for the Data Ingestion step in retrieval-augmented generation. This folder is used by a Lambda function that runs a container which updates the vectorstore for a course when files are uploaded or deleted.
-   - `/lambda`: Contains the lambda functions for the project
-   - `/layers`: Contains the required layers for lambda functions
-   - `/lib`: Contains the deployment code for all infrastructure stacks
-   - `/graphql`: Contains the GraphQL schema and resolvers for the API.
-2. `/docs`: Contains documentation for the application.
-3. `/frontend`: Contains the user interface of the general public application
+- `/cdk`: Contains the deployment code for the app's AWS infrastructure
+  - `/bin`: Contains the instantiation of CDK stack
+  - `/lambda`: Contains the lambda functions for the project
+  - `/layers`: Contains the required layers for lambda functions
+  - `/lib`: Contains the deployment code for all infrastructure stacks
+  - `/graphql`: Contains the GraphQL schema and resolvers for the API
+- `/docs`: Contains documentation for the application
+- `/frontend`: Contains the user interface of the application
+  - `/public`: Public assets used in the application
+  - `/src`: Contains the frontend code of the application
+    - `/components`: Contains reusable UI components and headers
+    - `/functions`: Contains authentication, file handling, and utility functions
+    - `/pages`: Contains pages used in the application
+      - `/admin`: Contains administrative interfaces for user and system management
+      - `/CasePage`: Contains case-specific views for transcription, notes, and AI assistance
+      - `/instructor`: Contains instructor dashboard and case oversight tools
+      - `/student`: Contains student interface for case creation and management
 
 ## API Documentation
 
